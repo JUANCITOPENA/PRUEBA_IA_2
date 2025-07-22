@@ -1,110 +1,127 @@
-const images = [
-    'IMG/1.gif',
-    'IMG/2.webp',
-    'IMG/3.webp',
-    'IMG/4.jpeg',
-    'IMG/5.jpeg',
-    'IMG/6.jpeg',
-    'IMG/7.jpeg',
-    'IMG/8.jpeg'
-];
-
-const cards = [...images, ...images]; // Duplicate for pairs
-let flippedCards = [];
-let matchedPairs = 0;
-let timeLeft = 60;
-let timerInterval;
-const totalPairs = cards.length / 2;
-
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
-
-function createBoard() {
+document.addEventListener('DOMContentLoaded', () => {
+    // Los IDs ahora coinciden con el HTML: 'game-board', 'timer', 'result-modal', etc.
     const gameBoard = document.getElementById('game-board');
-    gameBoard.innerHTML = '';
-    shuffle(cards).forEach((img, index) => {
-        const card = document.createElement('div');
-        card.classList.add('card');
-        card.dataset.image = img;
-        card.innerHTML = `
-            <div class="card-inner">
-                <div class="card-front">
-                    <img src="${IMG}" alt="Card">
-                </div>
-                <div class="card-back">
-                    <img src="https://castserr.cl/wp-content/uploads/2024/03/JUJUTSU-v1-1_1-301x301.png" alt="Back">
-                </div>
-            </div>
-        `;
-        card.addEventListener('click', () => flipCard(card));
-        gameBoard.appendChild(card);
-    });
-}
+    const timerElement = document.getElementById('timer');
+    const resultModal = document.getElementById('result-modal');
+    const resultImage = document.getElementById('result-image');
+    const restartButton = document.getElementById('restart-button');
 
-function flipCard(card) {
-    if (flippedCards.length < 2 && !card.classList.contains('flipped') && !card.classList.contains('matched')) {
-        card.classList.add('flipped');
-        flippedCards.push(card);
-        if (flippedCards.length === 2) {
-            checkMatch();
-        }
+    let cards = [];
+    let hasFlippedCard = false;
+    let lockBoard = false;
+    let firstCard, secondCard;
+    let timeLeft = 60;
+    let timer;
+    let pairsFound = 0;
+    const totalPairs = 8; // Basado en tu array de 8 imágenes
+
+    const cardTypes = [
+        { id: '1', ext: 'gif' }, { id: '2', ext: 'webp' },
+        { id: '3', ext: 'webp' }, { id: '4', ext: 'jpeg' },
+        { id: '5', ext: 'jpeg' }, { id: '6', ext: 'jpeg' },
+        { id: '7', ext: 'jpeg' }, { id: '8', ext: 'jpeg' }
+    ];
+
+    function createCards() {
+        const duplicatedCards = [...cardTypes, ...cardTypes];
+        duplicatedCards.sort(() => 0.5 - Math.random()); // Shuffle
+
+        duplicatedCards.forEach((cardType) => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.id = cardType.id;
+            card.dataset.ext = cardType.ext;
+            card.addEventListener('click', flipCard);
+            gameBoard.appendChild(card);
+        });
+
+        cards = document.querySelectorAll('.card');
     }
-}
 
-function checkMatch() {
-    const [card1, card2] = flippedCards;
-    if (card1.dataset.image === card2.dataset.image) {
-        card1.classList.add('matched');
-        card2.classList.add('matched');
-        matchedPairs++;
-        flippedCards = [];
-        if (matchedPairs === totalPairs) {
-            endGame(true);
+    function flipCard() {
+        if (lockBoard || this === firstCard || this.classList.contains('flipped')) return;
+
+        // Lógica de cambio de imagen - ¡Perfecta!
+        this.style.backgroundImage = `url('img/${this.dataset.id}.${this.dataset.ext}')`;
+        this.classList.add('flipped');
+
+        if (!hasFlippedCard) {
+            hasFlippedCard = true;
+            firstCard = this;
+            return;
         }
-    } else {
+
+        secondCard = this;
+        checkForMatch();
+    }
+
+    function checkForMatch() {
+        const isMatch = firstCard.dataset.id === secondCard.dataset.id;
+        isMatch ? disableCards() : unflipCards();
+    }
+
+    function disableCards() {
+        // La carta se queda volteada y sin listener. Correcto.
+        firstCard.removeEventListener('click', flipCard);
+        secondCard.removeEventListener('click', flipCard);
+        pairsFound++;
+
+        if (pairsFound === totalPairs) {
+            clearInterval(timer);
+            setTimeout(() => showResult('ganaste'), 500);
+        }
+
+        resetBoard();
+    }
+
+    function unflipCards() {
+        lockBoard = true;
         setTimeout(() => {
-            card1.classList.remove('flipped');
-            card2.classList.remove('flipped');
-            flippedCards = [];
+            // Se restaura el fondo original. Correcto.
+            firstCard.style.backgroundImage = "url('img/back.png')";
+            secondCard.style.backgroundImage = "url('img/back.png')";
+            firstCard.classList.remove('flipped');
+            secondCard.classList.remove('flipped');
+            resetBoard();
         }, 1000);
     }
-}
 
-function startTimer() {
-    timerInterval = setInterval(() => {
-        timeLeft--;
-        document.getElementById('time').textContent = timeLeft;
-        if (timeLeft <= 0) {
-            endGame(false);
-        }
-    }, 1000);
-}
+    function resetBoard() {
+        [hasFlippedCard, lockBoard] = [false, false];
+        [firstCard, secondCard] = [null, null];
+    }
 
-function endGame(won) {
-    clearInterval(timerInterval);
-    const modal = document.getElementById('modal');
-    const modalImage = document.getElementById('modal-image');
-    modalImage.src = won ? 'img/ganaste.gif' : 'img/perdiste.gif';
-    modal.style.display = 'flex';
-}
+    function showResult(result) {
+        resultImage.src = `img/${result}.gif`;
+        resultModal.style.display = 'flex'; // Usar flex para centrar
+    }
 
-function resetGame() {
-    timeLeft = 60;
-    matchedPairs = 0;
-    flippedCards = [];
-    document.getElementById('time').textContent = timeLeft;
-    document.getElementById('modal').style.display = 'none';
-    createBoard();
-    startTimer();
-}
+    function startTimer() {
+        timer = setInterval(() => {
+            timeLeft--;
+            if (timeLeft < 0) {
+                clearInterval(timer);
+                timerElement.textContent = 0;
+                showResult('perdiste');
+            } else {
+                timerElement.textContent = timeLeft;
+            }
+        }, 1000);
+    }
 
-document.getElementById('restart-btn').addEventListener('click', resetGame);
+    function restartGame() {
+        clearInterval(timer);
+        timeLeft = 60;
+        pairsFound = 0;
+        timerElement.textContent = timeLeft;
+        gameBoard.innerHTML = '';
+        createCards();
+        startTimer();
+        resultModal.style.display = 'none';
+    }
 
-// Initialize game
-createBoard();
-startTimer();
+    restartButton.addEventListener('click', restartGame);
+
+    // Inicio del juego
+    restartGame();
+});
