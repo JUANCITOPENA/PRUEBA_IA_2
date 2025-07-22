@@ -1,12 +1,12 @@
 const images = [
-    'img/1.gif',
-    'img/2.webp',
-    'img/3.webp',
-    'img/4.jpeg',
-    'img/5.jpeg',
-    'img/6.jpeg',
-    'img/7.jpeg',
-    'img/8.jpeg'
+    'IMG/1.gif',
+    'IMG/2.webp',
+    'IMG/3.webp',
+    'IMG/4.jpeg',
+    'IMG/5.jpeg',
+    'IMG/6.jpeg',
+    'IMG/7.jpeg',
+    'IMG/8.jpeg'
 ];
 
 const cards = [...images, ...images]; // Duplicate for pairs
@@ -34,7 +34,7 @@ function createBoard() {
         card.innerHTML = `
             <div class="card-inner">
                 <div class="card-front">
-                    <img src="${img}" alt="Card">
+                    <img src="${IMG}" alt="Card">
                 </div>
                 <div class="card-back">
                     <img src="https://castserr.cl/wp-content/uploads/2024/03/JUJUTSU-v1-1_1-301x301.png" alt="Back">
