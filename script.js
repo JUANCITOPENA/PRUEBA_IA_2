@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- CONFIGURACIÓN Y ESTADO DEL JUEGO ---
     const cardImages = [
-        'img/1.gif', 'img/2.webp', 'img/3.webp', 'img/4.jpeg',
-        'img/5.jpeg', 'img/6.jpeg', 'img/7.jpeg', 'img/8.jpeg'
+        'IMG/1.gif', 'IMG/2.webp', 'IMG/3.webp', 'IMG/4.jpeg',
+        'IMG/5.jpeg', 'IMG/6.jpeg', 'IMG/7.jpeg', 'IMG/8.jpeg'
     ];
     const TOTAL_PAIRS = cardImages.length;
     const GAME_TIME = 60; // segundos
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function winGame() {
         clearInterval(timerInterval);
         setTimeout(() => {
-            modalImage.src = 'img/ganaste.gif';
+            modalImage.src = 'IMG/ganaste.gif';
             modalImage.alt = 'Ganaste';
             modal.style.display = 'flex';
         }, 500); // Pequeña espera para saborear la victoria
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function loseGame() {
         clearInterval(timerInterval);
         lockBoard = true; // Bloquear el tablero completamente
-        modalImage.src = 'img/perdiste.gif';
+        modalImage.src = 'IMG/perdiste.gif';
         modalImage.alt = 'Perdiste';
         modal.style.display = 'flex';
     }
