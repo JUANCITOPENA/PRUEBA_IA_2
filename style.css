@@ -1,181 +1,136 @@
-/* --- ESTILOS GENERALES Y TEMA --- */
-* {
+body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Bungee', sans-serif;
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    padding: 20px;
-    background: linear-gradient(160deg, #d00000 0%, #ffba08 100%);
-    background-attachment: fixed;
-    color: white;
+    align-items: center;
+    background: linear-gradient(135deg, #8B0000, #FF4500, #FFD700);
+    font-family: 'Arial', sans-serif;
+    color: #fff;
 }
 
-/* --- CABECERA Y ESTADÍSTICAS --- */
-.game-stats {
+.game-container {
     text-align: center;
+    padding: 20px;
+}
+
+.timer {
+    font-size: 2rem;
     margin-bottom: 20px;
+    text-shadow: 0 0 10px #FF4500;
 }
 
-.game-stats h1 {
-    font-size: 2.5rem;
-    text-shadow: 3px 3px 0px #370617;
-    margin-bottom: 10px;
-}
-
-.timer-container {
-    font-size: 1.8rem;
-    background-color: rgba(0, 0, 0, 0.4);
-    padding: 10px 20px;
-    border-radius: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    text-shadow: 2px 2px 0px #000;
-}
-
-/* --- TABLERO DE JUEGO --- */
 .game-board {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    width: 100%;
+    gap: 10px;
     max-width: 600px;
-    margin: auto;
-    perspective: 1000px; /* Esencial para el efecto 3D de volteo */
+    margin: 0 auto;
 }
 
-/* --- ESTILO DE CARTA INDIVIDUAL --- */
 .card {
-    width: 100%;
-    aspect-ratio: 1 / 1; /* Mantiene la proporción cuadrada */
-    position: relative;
+    width: 100px;
+    height: 100px;
+    perspective: 1000px;
     cursor: pointer;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
     transform-style: preserve-3d;
-    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.6s;
 }
 
-.card:hover {
-    transform: scale(1.05);
-    transition: transform 0.2s ease-in-out;
+.card.flipped .card-inner {
+    transform: rotateY(180deg);
 }
 
-/* --- CARAS DE LA CARTA (FRONTAL Y REVERSO) --- */
-.card-face {
+.card-front, .card-back {
     position: absolute;
     width: 100%;
     height: 100%;
-    backface-visibility: hidden; /* Oculta la cara trasera del elemento */
-    border-radius: 12px;
-    
-    /* Efecto cristalino/translúcido */
-    background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 20px rgba(214, 40, 40, 0.4);
-    
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.card-face img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 12px;
-}
-
-.card-back {
-    background-image: url('https://castserr.cl/wp-content/uploads/2024/03/JUJUTSU-v1-1_1-301x301.png');
-    background-size: cover;
-    background-position: center;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
 }
 
 .card-front {
     transform: rotateY(180deg);
 }
 
-/* --- ESTADOS DE LA CARTA --- */
-.card.flipped {
-    transform: rotateY(180deg);
+.card-front img, .card-back img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.card-back {
+    transform: rotateY(0deg);
 }
 
 .card.matched {
-    transform: scale(0.95);
-    opacity: 0.6;
+    opacity: 0.7;
     cursor: default;
 }
 
-/* --- MODAL DE FIN DE JUEGO --- */
-.modal-overlay {
+.modal {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    display: none; /* Se activa con JS */
-    align-items: center;
+    background: rgba(0, 0, 0, 0.8);
     justify-content: center;
-    z-index: 1000;
-    animation: fadeIn 0.5s ease;
+    align-items: center;
 }
 
 .modal-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 20px #FF4500;
 }
 
 .modal-content img {
-    max-width: 90%;
-    width: 400px;
-    border-radius: 15px;
-    border: 3px solid #ffba08;
-}
-
-#restart-button {
-    font-family: 'Bungee', sans-serif;
-    font-size: 1.5rem;
-    padding: 15px 30px;
-    border: none;
+    max-width: 300px;
     border-radius: 10px;
-    background-color: #d00000;
+}
+
+#restart-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background: #FF4500;
+    border: none;
     color: white;
+    border-radius: 5px;
     cursor: pointer;
-    text-shadow: 2px 2px 0px #370617;
-    transition: background-color 0.3s, transform 0.3s;
+    transition: background 0.3s;
 }
 
-#restart-button:hover {
-    background-color: #ffba08;
-    color: #370617;
-    transform: scale(1.1);
+#restart-btn:hover {
+    background: #8B0000;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* --- RESPONSIVE DESIGN --- */
-@media (max-width: 640px) {
-    .game-stats h1 {
-        font-size: 2rem;
+@media (max-width: 600px) {
+    .card {
+        width: 80px;
+        height: 80px;
     }
-    .timer-container {
+
+    .timer {
         font-size: 1.5rem;
     }
-    .game-board {
-        max-width: 100%;
-        gap: 10px;
+
+    .modal-content img {
+        max-width: 200px;
     }
 }
