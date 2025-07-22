@@ -1,35 +1,22 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jujutsu Kaisen - Memory Game</title>
+    <title>Jujutsu Kaisen Memory Game</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?Bungee&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <header class="game-stats">
-        <h1>Jujutsu Kaisen Memory</h1>
-        <div class="timer-container">
-            <span>Tiempo:</span>
-            <span id="timer">60</span>
-        </div>
-    </header>
-
-    <main class="game-board" id="game-board">
-        <!-- Las cartas se generarán aquí con JavaScript -->
-    </main>
-
-    <div id="end-game-modal" class="modal-overlay">
-        <div class="modal-content">
-            <img id="end-game-image" src="" alt="Resultado del juego">
-            <button id="restart-button">Jugar de Nuevo</button>
+    <div class="game-container">
+        <div class="timer">Time: <span id="time">60</span>s</div>
+        <div class="game-board" id="game-board"></div>
+        <div class="modal" id="modal">
+            <div class="modal-content">
+                <img id="modal-image" src="" alt="Game Result">
+                <button id="restart-btn">Play Again</button>
+            </div>
         </div>
     </div>
-
-    <script src="script.js" defer></script>
+    <script src="script.js"></script>
 </body>
 </html>
